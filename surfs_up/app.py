@@ -71,5 +71,10 @@ def stations():
 
     return jsonify(station_list)
 
+@app.route('/api/v1.0/tobs')
+def tobs():
+    session = Session(engine)
+    results = 
+
 if __name__ == '__main__':
     app.run(debug=True)
