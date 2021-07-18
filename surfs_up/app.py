@@ -80,7 +80,7 @@ def tobs():
     query_date = recent_date - dt.timedelta(days=365)
 
     sel = [Measurement.date,Measurement.tobs]
-    queryresult = session.query(*sel).filter(Measurement.date >= querydate).all()
+    queryresult = session.query(*sel).filter(Measurement.date >= query_date).all()
     session.close()
 
     tobs_list = []
@@ -90,7 +90,7 @@ def tobs():
         tobs_dict["Tobs"] = tobs
         tobs_list.append(tobs_dict)
 
-    return jsonify(tobsall)
+    return jsonify(tobs_list)
 
 @app.route('/api/v1.0/<start>')
 def start_date(start):
@@ -110,7 +110,7 @@ def start_date(start):
     return jsonify(tobs_list)
 
 @app.route('/api/v1.0/<start>/<end>')
-def start_date(start,end):
+def start_end(start,end):
     session = Session(engine)
     results = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
         filter(Measurement.date >= start).\
