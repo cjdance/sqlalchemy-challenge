@@ -35,5 +35,41 @@ def welcome():
         f"Temperature stat from start to end dates(yyyy-mm-dd): /api/v1.0/yyyy-mm-dd/yyyy-mm-dd"
     )
 
+@app.route('/api/v1.0/precipitation')
+def precipitation():
+    session = Session(engine)
+    sel = [Measurement.date,Measurement.prcp]
+    queryresult = session.query(*sel).all()
+    session.close()
+
+    precipitation = []
+    for date, prcp in queryresult:
+        prcp_dict = {}
+        prcp_dict["Date"] = date
+        prcp_dict["Precipitation"] = prcp
+        precipitation.append(prcp_dict)
+
+    return jsonify(precipitation)
+
+
+@app.route('/api/v1.0/stations')
+def stations():
+    session = Session(engine)
+    results = session.query(Station.station, Station.name, Station.latitude, Station.longitude, Station.elevation).all()
+    session.close()
+
+    station_list = []
+
+    for station,name,lat,lon,el in results:
+        station_dict = {}
+        station_dict["Station"] = station
+        station_dict["Name"] = name
+        station_dict["Lat"] = lat
+        station_dict["Lon"] = lon
+        station_dict["Elevation"] = el
+        station_list.append(station_dict)
+
+    return jsonify(station_list)
+
 if __name__ == '__main__':
     app.run(debug=True)
